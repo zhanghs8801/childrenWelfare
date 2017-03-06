@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.child.welfare.dao.user.UserDao">
+	<resultMap type="cn.child.welfare.entity.User" id="userMap" autoMapping="true">
+		<id property="id" column="ID" />
+		<id property="email" column="EMAIL" />
+		<id property="password" column="PASSWORD" />
+		<id property="mobile" column="MOBILE" />
+		<id property="qq" column="QQ" />
+		<id property="contact" column="CONTACT" />
+		<id property="teamName" column="TEAMNAME" />
+		<id property="bizDesc" column="BIZDESC" />
+		<id property="status" column="STATUS" />
+		<id property="type" column="TYPE" />
+		<id property="createTime" column="CREATETIME" />
+	</resultMap>
+
+	<sql id="selectUser">
+		SELECT U.ID,U.EMAIL,U.PASSWORD,U.MOBILE,U.QQ,U.CONTACT,U.TEAMNAME,U.BIZDESC,U.STATUS,U.TYPE,U.CREATETIME
+		FROM VIP_BUSINESS_USER U
+	</sql>
+
+	<select id="exist" parameterType="java.lang.String" resultType="java.lang.Boolean">
+		SELECT COUNT(ID) FROM VIP_BUSINESS_USER WHERE EMAIL=#{email}
+	</select>
+
+	<insert id="create" parameterType="cn.child.welfare.entity.User">
+		INSERT INTO VIP_BUSINESS_USER
+		(EMAIL,PASSWORD,MOBILE,QQ,CONTACT,TEAMNAME,BIZDESC,STATUS,TYPE,CREATETIME)
+		VALUES
+		(#{email},#{password},#{mobile},#{qq},#{contact},#{teamName},#{bizDesc},1,#{type},now())
+	</insert>
+	
+	<select id="getUserById" parameterType="int" resultMap="userMap">
+		<include refid="selectUser" />
+		WHERE U.ID= #{id}
+	</select>
+	
+	<select id="findAll" resultMap="userMap">
+		<include refid="selectUser"/>
+	</select>
+	
+	<select id="queryUserByEmail" parameterType="String" resultMap="userMap">
+		<include refid="selectUser"/>
+		<!-- WHERE U.EMAIL LIKE CONCAT('%',#{email},'%' )  这个应该用于搜索功能-->
+		WHERE U.EMAIL = #{email}
+	</select>
+</mapper>
